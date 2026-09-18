@@ -1,34 +1,52 @@
 <!doctype html>
-<html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ちいさな花のお庭</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;background:linear-gradient(#dff5ff,#fff7fc);color:#4b5266;min-height:100vh;display:grid;place-items:center;padding:20px}.game{width:min(440px,100%);background:#ffffffcc;border:1px solid #fff;border-radius:28px;padding:22px;box-shadow:0 12px 40px #829bb326;text-align:center}h1{font-size:24px;margin:2px 0 6px;color:#657394}.sub{font-size:13px;margin:0 0 16px}.garden{height:260px;border-radius:24px;background:linear-gradient(#cfeeff 0 62%,#d9c7a7 62%);position:relative;overflow:hidden;display:grid;place-items:center}.sun{position:absolute;right:24px;top:22px;font-size:38px}.cloud{position:absolute;left:25px;top:34px;font-size:30px}.plant{font-size:86px;transform:translateY(30px);transition:.35s}.message{min-height:48px;margin:14px 0 8px;font-weight:600}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.stat{background:#f5f4fb;border-radius:14px;padding:9px 4px;font-size:12px}.stat b{display:block;font-size:17px;margin-top:2px}.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}button{border:0;border-radius:16px;padding:13px 8px;font-size:15px;font-weight:700;color:#566078;background:#e8f6ff;cursor:pointer}button:nth-child(2){background:#fff0f7}button:nth-child(3){background:#f1ecff}button:nth-child(4){background:#eef8e9}.reset{margin-top:12px;background:transparent!important;font-size:12px;color:#8991a2;padding:8px}.spark{animation:pop .5s}@keyframes pop{50%{transform:translateY(30px) scale(1.16)}}
-</style>
-</head>
-<body>
-<main class="game">
-<h1>🌱 ちいさな花のお庭</h1>
-<p class="sub">お世話のしかたで、咲く花が変わるよ</p>
-<section class="garden"><div class="cloud">☁️</div><div class="sun">☀️</div><div id="plant" class="plant">🫘</div></section>
-<div id="message" class="message">小さな種を植えました。どんな花になるかな？</div>
-<div class="stats">
-<div class="stat">💧 水分<b id="water">0</b></div>
-<div class="stat">☀️ 日光<b id="sun">0</b></div>
-<div class="stat">🩷 愛情<b id="love">0</b></div>
-</div>
-<div class="actions">
-<button id="waterBtn">💧 水をあげる</button><button id="sunBtn">☀️ ひなたへ</button><button id="talkBtn">🩷 話しかける</button><button id="foodBtn">🌿 肥料をあげる</button>
-</div>
-<button id="reset" class="reset">最初から育てる</button>
-</main>
-<script>
-const s={water:0,sun:0,love:0,food:0,turn:0};
-const $=id=>document.getElementById(id);
-function update(action){s[action]++;s.turn++;$('water').textContent=s.water;$('sun').textContent=s.sun;$('love').textContent=s.love;let emoji='🫘',msg='種が土の中で目を覚ましはじめています…';if(s.turn>=2){emoji='🌱';msg='わあ！小さな芽が出たよ 🌱';}if(s.turn>=5){emoji='🌿';msg='葉っぱが増えて、すくすく育っています';}if(s.turn>=8){emoji='🪴';msg='もうすぐつぼみができそう…！';}if(s.turn>=11){if(s.love>=5){emoji='🌸';msg='愛情いっぱいの桜色の花が咲きました！';}else if(s.water>=4&&s.sun>=3){emoji='🩵';msg='幻の水色の花が咲きました！ ✨';}else if(s.sun>=5){emoji='🌻';msg='太陽が大好きな花が咲きました！';}else{emoji='🌷';msg='やさしい色の花が咲きました！';}}$('plant').textContent=emoji;$('message').textContent=msg;$('plant').classList.remove('spark');void $('plant').offsetWidth;$('plant').classList.add('spark');}
-$('waterBtn').addEventListener('click',()=>update('water'));$('sunBtn').addEventListener('click',()=>update('sun'));$('talkBtn').addEventListener('click',()=>update('love'));$('foodBtn').addEventListener('click',()=>update('food'));$('reset').addEventListener('click',()=>location.reload());
-</script>
-</body>
-</html>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;background:linear-gradient(#def4ff,#fff7fb);color:#50586d;min-height:100vh;padding:18px}.game{max-width:460px;margin:auto;background:#ffffffd9;border-radius:28px;padding:20px;text-align:center;box-shadow:0 12px 35px #7892aa25}h1{font-size:24px;margin:3px 0}.sub,.small{font-size:13px;color:#7c8496}.day{display:inline-block;background:#edf7ff;border-radius:20px;padding:7px 14px;margin:8px 0 12px;font-weight:700}.garden{height:250px;border-radius:24px;background:linear-gradient(#cfefff 0 62%,#d8c4a3 62%);position:relative;display:grid;place-items:center;overflow:hidden}.plant{font-size:90px;transform:translateY(30px)}.sky{position:absolute;top:20px;font-size:34px}.sun{right:22px}.cloud{left:22px}.message{min-height:60px;padding:14px 4px 4px;font-weight:700;line-height:1.6}.choices{display:grid;gap:10px;margin-top:12px}button{width:100%;border:0;border-radius:17px;padding:14px 10px;font-size:15px;font-weight:700;color:#566078;background:#eaf6ff;min-height:48px}button:nth-child(2){background:#fff0f7}button:nth-child(3){background:#f1edff}button:disabled{opacity:.45}.basic{display:flex;gap:9px;margin-top:12px}.basic button{font-size:14px}.note{margin-top:13px;padding:11px;border-radius:15px;background:#f8f7fb;font-size:13px}.result{font-size:16px;line-height:1.8}.reset{background:transparent!important;color:#9298a7;font-size:12px;margin-top:7px}
+</style></head><body><main class="game">
+<h1>🌱 ちいさな花のお庭</h1><p class="sub">5日間のお世話で、あなたの花が決まります</p>
+<div id="day" class="day"></div>
+<section class="garden"><span class="sky cloud">☁️</span><span class="sky sun">☀️</span><div id="plant" class="plant"></div></section>
+<div id="message" class="message"></div>
+<div id="basic" class="basic"><button id="water">💧 お水をあげる</button><button id="care">🫶 今日のお世話を選ぶ</button></div>
+<div id="choices" class="choices" hidden></div><div id="note" class="note"></div>
+<button id="reset" class="reset">育成データをリセット（テスト用）</button>
+</main><script>
+const KEY='littleFlowerGardenV2';
+const flowers=[
+ {name:'ガーベラ',emoji:'🌼',word:'希望',key:'hope'},
+ {name:'チューリップ',emoji:'🌷',word:'思いやり',key:'kind'},
+ {name:'ラベンダー',emoji:'🪻',word:'安らぎ',key:'calm'},
+ {name:'ひまわり',emoji:'🌻',word:'憧れ',key:'dream'},
+ {name:'ネモフィラ',emoji:'💠',word:'可憐',key:'gentle'}
+];
+const events=[
+ {text:'土の中の種は、まだ静かに眠っています。',opts:[['明るい言葉で励ます','hope'],['そっと見守る','calm'],['やさしく声をかける','gentle']]},
+ {text:'小さな芽が、土から顔を出しました！',opts:[['成長をたくさん褒める','dream'],['無理せず休ませる','calm'],['葉を傷つけないよう丁寧に見る','kind']]},
+ {text:'葉っぱが増えて、風に揺れています。',opts:[['新しい場所の光を見せる','hope'],['そばで一緒に過ごす','gentle'],['必要な分だけ手をかける','kind']]},
+ {text:'茎の先に、小さなつぼみができました。',opts:[['「きっと素敵に咲くよ」と伝える','hope'],['静かな時間を作ってあげる','calm'],['咲く日を楽しみに応援する','dream']]},
+ {text:'いよいよ開花の日です。',opts:[]}
+];
+function dateKey(d=new Date()){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
+let s=load()||{start:dateKey(),day:1,scores:{hope:0,kind:0,calm:0,dream:0,gentle:0},done:{},watered:{},flower:null};
+function save(){localStorage.setItem(KEY,JSON.stringify(s))}
+function daysBetween(){const a=new Date(s.start+'T00:00:00'),b=new Date(dateKey()+'T00:00:00');return Math.max(0,Math.floor((b-a)/86400000))}
+function sync(){s.day=Math.min(5,daysBetween()+1);save()}
+const $=x=>document.getElementById(x);
+function winner(){let best='hope',max=-1;Object.keys(s.scores).forEach(k=>{if(s.scores[k]>max){max=s.scores[k];best=k}});return flowers.find(f=>f.key===best)}
+function render(){sync();const d=s.day, today=dateKey();$('day').textContent='DAY '+d+' / 5';
+ let plant=['🫘','🌱','🌿','🪴','🌷'][d-1];$('plant').textContent=plant;
+ $('choices').hidden=true;$('choices').innerHTML='';
+ if(d===5){if(!s.flower){s.flower=winner();save()}const f=s.flower;$('plant').textContent=f.emoji;$('message').innerHTML='<div class="result">✨ <b>'+f.name+'が咲きました</b><br>花言葉「'+f.word+'」</div>';$('basic').hidden=true;$('note').textContent='4日間のあなたのお世話に、いちばん近い花が咲きました。';return}
+ $('basic').hidden=false;$('message').textContent=events[d-1].text;
+ const done=s.done[today], watered=s.watered[today];$('water').disabled=!!watered;$('care').disabled=!!done;
+ $('water').textContent=watered?'💧 お水をあげました':'💧 お水をあげる';
+ $('care').textContent=done?'🫶 今日のお世話は完了':'🫶 今日のお世話を選ぶ';
+ $('note').textContent=(done&&watered)?'今日のお世話はおしまい。また明日会いにきてね 🌙':'今日はお水と、心のお世話をしてあげよう。';
+}
+$('water').addEventListener('click',()=>{s.watered[dateKey()]=true;save();render()});
+$('care').addEventListener('click',()=>{const ev=events[s.day-1];$('choices').innerHTML='';ev.opts.forEach(o=>{const b=document.createElement('button');b.textContent=o[0];b.addEventListener('click',()=>{s.scores[o[1]]++;s.done[dateKey()]=o[0];save();render()});$('choices').appendChild(b)});$('choices').hidden=false});
+$('reset').addEventListener('click',()=>{if(confirm('最初の日から育て直しますか？')){localStorage.removeItem(KEY);location.reload()}});
+render();
+</script></body></html>
