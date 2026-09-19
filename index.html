@@ -1,52 +1,25 @@
-<!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ちいさな花のお庭</title>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;background:linear-gradient(#def4ff,#fff7fb);color:#50586d;min-height:100vh;padding:18px}.game{max-width:460px;margin:auto;background:#ffffffd9;border-radius:28px;padding:20px;text-align:center;box-shadow:0 12px 35px #7892aa25}h1{font-size:24px;margin:3px 0}.sub,.small{font-size:13px;color:#7c8496}.day{display:inline-block;background:#edf7ff;border-radius:20px;padding:7px 14px;margin:8px 0 12px;font-weight:700}.garden{height:250px;border-radius:24px;background:linear-gradient(#cfefff 0 62%,#d8c4a3 62%);position:relative;display:grid;place-items:center;overflow:hidden}.plant{font-size:90px;transform:translateY(30px)}.sky{position:absolute;top:20px;font-size:34px}.sun{right:22px}.cloud{left:22px}.message{min-height:60px;padding:14px 4px 4px;font-weight:700;line-height:1.6}.choices{display:grid;gap:10px;margin-top:12px}button{width:100%;border:0;border-radius:17px;padding:14px 10px;font-size:15px;font-weight:700;color:#566078;background:#eaf6ff;min-height:48px}button:nth-child(2){background:#fff0f7}button:nth-child(3){background:#f1edff}button:disabled{opacity:.45}.basic{display:flex;gap:9px;margin-top:12px}.basic button{font-size:14px}.note{margin-top:13px;padding:11px;border-radius:15px;background:#f8f7fb;font-size:13px}.result{font-size:16px;line-height:1.8}.reset{background:transparent!important;color:#9298a7;font-size:12px;margin-top:7px}
-</style></head><body><main class="game">
-<h1>🌱 ちいさな花のお庭</h1><p class="sub">5日間のお世話で、あなたの花が決まります</p>
-<div id="day" class="day"></div>
-<section class="garden"><span class="sky cloud">☁️</span><span class="sky sun">☀️</span><div id="plant" class="plant"></div></section>
-<div id="message" class="message"></div>
-<div id="basic" class="basic"><button id="water">💧 お水をあげる</button><button id="care">🫶 今日のお世話を選ぶ</button></div>
-<div id="choices" class="choices" hidden></div><div id="note" class="note"></div>
-<button id="reset" class="reset">育成データをリセット（テスト用）</button>
-</main><script>
-const KEY='littleFlowerGardenV2';
-const flowers=[
- {name:'ガーベラ',emoji:'🌼',word:'希望',key:'hope'},
- {name:'チューリップ',emoji:'🌷',word:'思いやり',key:'kind'},
- {name:'ラベンダー',emoji:'🪻',word:'安らぎ',key:'calm'},
- {name:'ひまわり',emoji:'🌻',word:'憧れ',key:'dream'},
- {name:'ネモフィラ',emoji:'💠',word:'可憐',key:'gentle'}
-];
-const events=[
- {text:'土の中の種は、まだ静かに眠っています。',opts:[['明るい言葉で励ます','hope'],['そっと見守る','calm'],['やさしく声をかける','gentle']]},
- {text:'小さな芽が、土から顔を出しました！',opts:[['成長をたくさん褒める','dream'],['無理せず休ませる','calm'],['葉を傷つけないよう丁寧に見る','kind']]},
- {text:'葉っぱが増えて、風に揺れています。',opts:[['新しい場所の光を見せる','hope'],['そばで一緒に過ごす','gentle'],['必要な分だけ手をかける','kind']]},
- {text:'茎の先に、小さなつぼみができました。',opts:[['「きっと素敵に咲くよ」と伝える','hope'],['静かな時間を作ってあげる','calm'],['咲く日を楽しみに応援する','dream']]},
- {text:'いよいよ開花の日です。',opts:[]}
-];
-function dateKey(d=new Date()){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
-function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
-let s=load()||{start:dateKey(),day:1,scores:{hope:0,kind:0,calm:0,dream:0,gentle:0},done:{},watered:{},flower:null};
-function save(){localStorage.setItem(KEY,JSON.stringify(s))}
-function daysBetween(){const a=new Date(s.start+'T00:00:00'),b=new Date(dateKey()+'T00:00:00');return Math.max(0,Math.floor((b-a)/86400000))}
-function sync(){s.day=Math.min(5,daysBetween()+1);save()}
-const $=x=>document.getElementById(x);
-function winner(){let best='hope',max=-1;Object.keys(s.scores).forEach(k=>{if(s.scores[k]>max){max=s.scores[k];best=k}});return flowers.find(f=>f.key===best)}
-function render(){sync();const d=s.day, today=dateKey();$('day').textContent='DAY '+d+' / 5';
- let plant=['🫘','🌱','🌿','🪴','🌷'][d-1];$('plant').textContent=plant;
- $('choices').hidden=true;$('choices').innerHTML='';
- if(d===5){if(!s.flower){s.flower=winner();save()}const f=s.flower;$('plant').textContent=f.emoji;$('message').innerHTML='<div class="result">✨ <b>'+f.name+'が咲きました</b><br>花言葉「'+f.word+'」</div>';$('basic').hidden=true;$('note').textContent='4日間のあなたのお世話に、いちばん近い花が咲きました。';return}
- $('basic').hidden=false;$('message').textContent=events[d-1].text;
- const done=s.done[today], watered=s.watered[today];$('water').disabled=!!watered;$('care').disabled=!!done;
- $('water').textContent=watered?'💧 お水をあげました':'💧 お水をあげる';
- $('care').textContent=done?'🫶 今日のお世話は完了':'🫶 今日のお世話を選ぶ';
- $('note').textContent=(done&&watered)?'今日のお世話はおしまい。また明日会いにきてね 🌙':'今日はお水と、心のお世話をしてあげよう。';
-}
-$('water').addEventListener('click',()=>{s.watered[dateKey()]=true;save();render()});
-$('care').addEventListener('click',()=>{const ev=events[s.day-1];$('choices').innerHTML='';ev.opts.forEach(o=>{const b=document.createElement('button');b.textContent=o[0];b.addEventListener('click',()=>{s.scores[o[1]]++;s.done[dateKey()]=o[0];save();render()});$('choices').appendChild(b)});$('choices').hidden=false});
-$('reset').addEventListener('click',()=>{if(confirm('最初の日から育て直しますか？')){localStorage.removeItem(KEY);location.reload()}});
-render();
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ちいさな花のお庭</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;background:linear-gradient(#dff5ff,#fff6fb);color:#535b70;min-height:100vh;padding:16px}.game{max-width:460px;margin:auto;background:#ffffffdc;border-radius:28px;padding:20px;box-shadow:0 12px 38px #7892aa25;text-align:center}h1{font-size:23px;margin:2px}.sub{font-size:12px;color:#8990a0;margin:5px 0 14px}.garden{height:245px;border-radius:24px;background:linear-gradient(#cfedff 0 63%,#dbc8a8 63%);position:relative;display:grid;place-items:center;overflow:hidden}.plant{font-size:90px;transform:translateY(28px);cursor:pointer;user-select:none}.plant.pop{animation:pop .35s}@keyframes pop{50%{transform:translateY(28px) scale(1.12)}}.sky{position:absolute;top:20px;font-size:34px}.sun{right:22px}.cloud{left:22px}.bubble{position:absolute;top:72px;left:50%;transform:translateX(-50%);background:#fff;border-radius:18px;padding:9px 13px;max-width:78%;font-size:13px;font-weight:650;box-shadow:0 5px 15px #60708018}.meters{margin:15px 2px 8px;text-align:left}.meter{display:grid;grid-template-columns:82px 1fr;align-items:center;gap:8px;margin:9px 0;font-size:13px;font-weight:650}.track{height:11px;background:#edf0f4;border-radius:10px;overflow:hidden}.fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#b7ddf4,#d6c8f2);transition:width .4s}.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px}button{border:0;border-radius:16px;padding:13px 7px;font-size:14px;font-weight:700;color:#596176;background:#e9f6ff}button:nth-child(2){background:#fff0f7}button:nth-child(3){background:#eff7e9}button:nth-child(4){background:#f1edff}.status{font-size:12px;color:#8b91a0;margin-top:11px}.reset{background:transparent!important;color:#a0a4af;font-size:11px;margin-top:8px}.sleep{opacity:.72}.stage{font-size:12px;background:#f4f1fb;display:inline-block;padding:6px 12px;border-radius:16px;margin-bottom:10px}
+</style></head><body><main class="game"><h1>🌱 ちいさな花のお庭</h1><p class="sub">一緒に過ごした時間で、少しずつ育つよ</p><div id="stage" class="stage"></div>
+<section class="garden"><span class="sky cloud">☁️</span><span class="sky sun">☀️</span><div id="bubble" class="bubble">……だれ？</div><div id="plant" class="plant">🫘</div></section>
+<div class="meters"><div class="meter">🌱 成長<div class="track"><div id="growth" class="fill"></div></div></div><div class="meter">💧 うるおい<div class="track"><div id="moisture" class="fill"></div></div></div><div class="meter">☀️ ひかり<div class="track"><div id="light" class="fill"></div></div></div><div class="meter">🌿 げんき<div class="track"><div id="health" class="fill"></div></div></div><div class="meter">🩷 なかよし<div class="track"><div id="friend" class="fill"></div></div></div></div>
+<div class="actions"><button id="water">💧 お水</button><button id="sunny">☀️ ひなた</button><button id="care">🌿 お手入れ</button><button id="talk">🩷 おはなし</button></div><div id="status" class="status">一緒に過ごしているよ 🌱</div><button id="reset" class="reset">育成データをリセット（テスト用）</button></main>
+<script>
+const KEY='littleFlowerGardenV3',MAX=72*60*60,IDLE=5*60*1000,$=x=>document.getElementById(x);
+let s;try{s=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!s)s={play:0,moisture:70,light:50,health:80,friend:20,last:Date.now()};
+let lastTick=Date.now(),lastAction=Date.now(),active=true;
+const clamp=n=>Math.max(0,Math.min(100,n));function save(){localStorage.setItem(KEY,JSON.stringify(s))}
+function speak(t){$('bubble').textContent=t}
+function touch(){lastAction=Date.now();if(!active){active=true;speak('あ！おかえり〜♪')}render()}
+function stage(){let p=s.play/MAX;if(p>=1)return[4,'開花','🌷'];if(p>=30/72)return[3,'つぼみ','🪴'];if(p>=12/72)return[2,'若葉','🌿'];if(p>=3/72)return[1,'小さな芽','🌱'];return[0,'種','🫘']}
+function render(){const st=stage();$('stage').textContent=st[1];$('plant').textContent=st[2];$('growth').style.width=clamp(s.play/MAX*100)+'%';['moisture','light','health','friend'].forEach(k=>$(k).style.width=clamp(s[k])+'%');$('status').textContent=active?'一緒に過ごしているよ 🌱':'ひと休み中…触るとまた一緒に過ごせるよ 💤';$('plant').classList.toggle('sleep',!active)}
+function react(type){touch();if(type==='water'){if(s.moisture>85){s.health-=3;speak('まだお水いっぱいだよ〜💦')}else{s.moisture+=28;s.health+=2;speak('わぁ、お水ありがとう〜！💧')}}if(type==='sunny'){if(s.light>85){s.health-=2;speak('ちょっとまぶしいかも〜☀️')}else{s.light+=22;s.health+=2;speak('おひさま、あったかいなぁ♪')}}if(type==='care'){s.health+=7;s.friend+=2;speak('きれいにしてくれてありがとう♡')}if(type==='talk'){s.friend+=5;speak(s.friend>65?'今日も来てくれてうれしい♡':'えへへ、もっとお話ししたいな♪')}s.moisture=clamp(s.moisture);s.light=clamp(s.light);s.health=clamp(s.health);s.friend=clamp(s.friend);save();render()}
+['water','sunny','care','talk'].forEach(id=>$(id).addEventListener('click',()=>react(id)));
+$('plant').addEventListener('click',()=>{touch();s.friend=clamp(s.friend+.4);speak(s.friend>60?'くすぐったいよ〜♪':'……ふふっ♪');$('plant').classList.remove('pop');void $('plant').offsetWidth;$('plant').classList.add('pop');save();render()});
+setInterval(()=>{const now=Date.now(),dt=(now-lastTick)/1000;lastTick=now;if(now-lastAction>=IDLE){if(active){active=false;speak('ちょっと休憩するね…💤')}render();return}active=true;s.play=Math.min(MAX,s.play+dt);s.moisture=clamp(s.moisture-dt/900);s.light=clamp(s.light-dt/1200);if(s.moisture<25||s.light<20)s.health=clamp(s.health-dt/500);save();render()},1000);
+const chatter=['今日はのんびりだね〜','いま何してるの？','もうちょっと一緒にいよ？','ふふ〜ん♪','なんだか少し大きくなった気がする〜♪'];
+setInterval(()=>{if(!active)return;if(s.moisture<30)speak('ちょっとのど渇いたかも…💧');else if(s.light<25)speak('おひさまに会いたいなぁ…☀️');else speak(chatter[Math.floor(Math.random()*chatter.length)])},30000);
+document.addEventListener('visibilitychange',()=>{lastTick=Date.now();if(!document.hidden)touch()});['click','touchstart'].forEach(e=>document.addEventListener(e,()=>{if(Date.now()-lastAction>1000)touch()},{passive:true}));
+$('reset').addEventListener('click',()=>{if(confirm('最初から育て直しますか？')){localStorage.removeItem(KEY);location.reload()}});
+render();save();
 </script></body></html>
